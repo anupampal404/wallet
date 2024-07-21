@@ -1,20 +1,27 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "../components/Button";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const navigate = useNavigate;
 
 export const Users = () => {
-// to be replaced by backend call
-    const [users, setUsers] = useState([{
-        firstName: "Anupam",
-        lastName: "Pal",
-        _id: 1
-    }])
+// backend call
+    const [users, setUsers] = useState([]);
+    const [filter, setFilter] = useState("");
+
+    useEffect(()=> {
+        axios.get("http://localhost:3000/api/v1/user/bulk?filter=" + filter)
+        .then(response => {
+            setUsers(response.data.user)
+        })
+    },[filter]);
 
     return <div>
         <div className="font-bold mt-6 text-lg">
             Users
         </div>
         <div className="my-2">
-            <input type="text" placeholder="Search users..." className="w-full px-2 py-1 border rounded border-slate-200"/>
+            <input type="text" onChange={e => {setFilter(e.target.value)}} placeholder="Search users..." className="w-full px-2 py-1 border rounded border-slate-200"/>
 
         </div>
         <div>
@@ -28,7 +35,7 @@ function User({user}) {
         <div className="flex">
             <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
                 <div className="flex flex-col justify-center h-full text-xl">
-                    {user.firstName[0]}
+                    {user.firstName[0].toUpperCase()}
                 </div>
             </div>
             <div className="flex flex-col justify-center h-ful">

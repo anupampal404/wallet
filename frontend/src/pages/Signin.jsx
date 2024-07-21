@@ -8,56 +8,41 @@ import { useNavigate } from "react-router-dom";
 import axios from 'axios'
 
 export const Signin = () => {
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [username, setUserName] = useState('')
+  const [password, setPassword] = useState('')
   const navigate = useNavigate();
+
   return (
     <div className="bg-slate-300 h-screen flex justify-center">
       <div className="flex flex-col justify-center">
         <div className="rounded-lg bg-white w-80 text-center p-2 h-max px-4">
           <Heading label={"Signin"} />
           <SubHeading
-            subHeading={"Enter your credentials to access your account"}
+            subHeading={"Enter your information to access your account"}
           />
-          <InputBox label={"Email"} holder={"john@gmail.com"} onChange={e => {setUserName(e.target.value)}}/>
-          <InputBox label={"Password"} holder={"123456"} onChange={e => {setPassword(e.target.value)}}/>
+          <InputBox label={"Email"} holder={"john@gmail.com"}
+            onChange = {e => {setUserName(e.target.value)}}
+           />
+          <InputBox label={"Password"} holder={"123456"} 
+            onChange = {e => {setPassword(e.target.value)}}
+          />
           <div className="pt-4">
-          <Button label={"Sign in"} onClick={async (e) => {
-            e.preventDefault();
-            
-            try {
-              const response = await axios.post("http://localhost:3000/api/v1/user/signin",payload, {
-                username : username,
-                password : password,
-              },{
-                headers: {
-                  "Content-Type" : 'application/json',
-                  "Content-Length": JSON.stringify(payload).length
-                }
-              });
-              if(response.status === 200) {
-                setMessage('Sign in Successfull')
-                localStorage.setItem("token", response.data.token)
-                navigate("/dashboard")
-              }
-            } catch(error) {
-              if(error.response && error.response.status === 411) {
-                setMessage("Invalid username or password");
-              }
-              else {
-                setMessage("server error");
-              }
-            }
-            
-          }}/>
+            {/* making backend call to create user */}
+          <Button label={"Sign in"} onClick={ async () => {
+            const response = await axios.post("http://localhost:3000/api/v1/user/signin", {
+              username : username,
+              password : password,
+            });
+            localStorage.setItem("token", response.data.token)
+            localStorage.setItem('currentUser', username)
+            navigate("/dashboard")
+          }} />
           </div>
           <BottomWarning
-            label={"Don't have an account?"}
-            buttonText={"Sign up"}
-            to={"/signup"}
+            label={"Already have an account?"}
+            buttonText={"Sign in"}
+            to={"/signin"}
           />
-          <div><BottomWarning label={message}/></div>
         </div>
       </div>
     </div>
