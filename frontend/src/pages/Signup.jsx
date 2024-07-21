@@ -38,7 +38,7 @@ export const Signup = () => {
 
             {/* making backend call to create user */}
           <Button label={"Sign up"} onClick={ async () => {
-            const response = await axios.post("http://localhost:3000/api/v1/user/signup", {
+            const response = await axios.post("money-wallet-api.vercel.app/api/v1/user/signup", {
               username : username,
               password : password,
               firstName : firstName,
